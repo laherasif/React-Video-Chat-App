@@ -34,7 +34,6 @@ const SocketProvider = ({ children }) => {
 
     }, [])
 
-    console.log("stream" , stream , "me" , me)
 
     const callAnswer = () => {
         setCallaccpted(true)
