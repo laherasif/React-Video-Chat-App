@@ -1,18 +1,18 @@
 import { createContext, useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
-import  Peer  from 'simple-peer'
+import Peer from 'simple-peer'
+
+const socket = io('http://localhost:5000/')
 
 const SocketContext = createContext()
-const [stream, setStream] = useState(null)
-const [me, setMe] = useState('')
-const [call, setCall] = useState({})
-const [callaccpted, setCallaccpted] = useState({})
-const [callEnd, setCallEnd] = useState({})
-const [name, setName] = useState('')
+const SocketProvider = ({ children }) => {
 
-const socket = io('ws//:localhost:5000')
-
-const SocketProvider= ({ children }) => {
+    const [stream, setStream] = useState()
+    const [me, setMe] = useState('')
+    const [call, setCall] = useState({})
+    const [callaccpted, setCallaccpted] = useState({})
+    const [callEnd, setCallEnd] = useState({})
+    const [name, setName] = useState('')
 
     const myVideo = useRef()
     const userVideo = useRef()
@@ -22,16 +22,19 @@ const SocketProvider= ({ children }) => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((userStream) => {
                 setStream(userStream)
-                myVideo.current.srcObject = userStream
+                // myVideo.current.srcObject = userStream
+
             });
 
         socket.on('me', (id) => setMe(id))
-
+                
         socket.on('callUser', ({ from, callerName, signal }) => {
             setCall({ isRecieveCall: true, from, callerName, signal })
         });
 
     }, [])
+
+    console.log("stream" , stream , "me" , me)
 
     const callAnswer = () => {
         setCallaccpted(true)
@@ -48,7 +51,7 @@ const SocketProvider= ({ children }) => {
     }
 
 
-    const callUser = () => {
+    const callUser = (id) => {
 
         const peer = new Peer({ initiator: true, trickle: false, stream })
         peer.on('signal ', (data) => {
@@ -92,7 +95,7 @@ const SocketProvider= ({ children }) => {
             callUser,
             leaveCall,
         }}>
-           { children }
+            {children}
         </SocketContext.Provider>
     )
 
@@ -100,6 +103,6 @@ const SocketProvider= ({ children }) => {
 }
 
 
-export { SocketContext , SocketProvider }
+export { SocketContext, SocketProvider }
 
 

@@ -27,6 +27,7 @@ const io = new Server(expressServer, {
 io.on('connection', (socket) => {
 
     socket.emit('me', socket.id)
+    console.log("user are connected")
 
     socket.on('disconnect', () => {
         socket.broadcast.emit("callend")
