@@ -7,7 +7,9 @@ const useStyle = makeStyles({
     },
     heading:{
         textAlign :'center',
-        fontWeight : "bold"
+        fontWeight : "bold",
+        paddingTop : '15px',
+        fontSize : '25px'
 
     }
 })
@@ -17,7 +19,7 @@ function Navbar() {
     return (
         <>
         <AppBar position="static" className={classes.appbar} >
-          <Typography varient="h4" className={classes.heading}>Video Chat App </Typography>
+          <Typography varient="h2" className={classes.heading}>Video Chat App </Typography>
         </AppBar>
             
         </>

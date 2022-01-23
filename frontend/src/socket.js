@@ -22,7 +22,7 @@ const SocketProvider = ({ children }) => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((userStream) => {
                 setStream(userStream)
-                // myVideo.current.srcObject = userStream
+                myVideo.current.srcObject = userStream
 
             });
 
