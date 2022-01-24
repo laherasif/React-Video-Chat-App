@@ -31,7 +31,7 @@ let useStyle = makeStyles((theme) => ({
 }))
 function Information() {
     const classes = useStyle()
-    const { name, setName, me,  callUser , leaveCall , call , callAccpted , callEnded , answerCall } = useContext(SocketContext)
+    const { name, setName, me,  callUser , leaveCall , call , callAccepted , callEnded , answerCall } = useContext(SocketContext)
     const [ callToUser , setCallToUser] = useState('')
    console.log("satte" , callToUser);
    
@@ -44,11 +44,11 @@ function Information() {
                         <Typography className={classes.account_head}>User Account Information</Typography>
                         <TextField label="Name" className={classes.account_name} value={name} onChange={(e) => setName(e.target.value)} />
                         <CopyToClipboard text={me}>
-                            <Button className={classes.account_btn} variant="contained" color="primary" startIcon={<Assignment />} fullwidth >Copy Your Id </Button>
+                            <Button className={classes.account_btn} variant="contained" color="primary" startIcon={<Assignment />}  >Copy Your Id </Button>
                         </CopyToClipboard>
-                        { call.isReceivingCall && !callAccpted && (                        
+                        { call.isReceivingCall && !callAccepted && (                        
                         <Box>
-                        <Button className={classes.account_btn} variant="contained" color="primary" onClick={answerCall} fullwidth >Answer</Button>
+                        <Button className={classes.account_btn} variant="contained" color="primary" onClick={answerCall}  >Answer</Button>
                         </Box>
                         )}
                     </Paper>
@@ -57,12 +57,12 @@ function Information() {
                     <Paper className={classes.paper}>
                         <Typography className={classes.account_head}>Make a Call With Friend </Typography>
                         <TextField label="Id of Friend" className={classes.account_name} value={callToUser} onChange={(e) => setCallToUser(e.target.value)} />
-                        {callAccpted && !callEnded ? (
-                <Button variant="contained" className={classes.account_btn} color="secondary" startIcon={<PhoneDisabled fontSize="large" />} fullWidth onClick={leaveCall} >
+                        {callAccepted && !callEnded ? (
+                <Button variant="contained" className={classes.account_btn} color="secondary" startIcon={<PhoneDisabled fontSize="large" />}  onClick={leaveCall} >
                   Hang Up
                 </Button>
               ) : (
-                <Button variant="contained" className={classes.account_btn} color="primary" startIcon={<Phone fontSize="large" />} fullWidth onClick={() => callUser(callToUser)} >
+                <Button variant="contained" className={classes.account_btn} color="primary" startIcon={<Phone fontSize="large" />}  onClick={() => callUser(callToUser)} >
                   Call
                 </Button>
               )}
