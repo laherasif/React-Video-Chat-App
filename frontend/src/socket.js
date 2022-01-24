@@ -7,115 +7,98 @@ const socket = io('http://localhost:5000/')
 const SocketContext = createContext()
 const SocketProvider = ({ children }) => {
 
-    const [stream, setStream] = useState()
-    const [me, setMe] = useState('')
-    const [call, setCall] = useState({})
-    const [callaccpted, setCallaccpted] = useState({})
-    const [callEnd, setCallEnd] = useState({})
-    const [name, setName] = useState('')
+  const [stream, setStream] = useState()
+  const [me, setMe] = useState('')
+  const [call, setCall] = useState({})
+  const [callaccpted, setCallaccpted] = useState(false)
+  const [callEnd, setCallEnd] = useState(false)
+  const [name, setName] = useState('')
 
-    const myVideo = useRef()
-    const userVideo = useRef()
-    const currentRef = useRef()
+  const myVideo = useRef()
+  const userVideo = useRef()
+  const currentRef = useRef()
 
-    console.log("call acpt" , callaccpted)
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((userStream) => {
+        setStream(userStream)
+        myVideo.current.srcObject = userStream
 
-    useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then((userStream) => {
-                setStream(userStream)
-                myVideo.current.srcObject = userStream
+      });
 
-            });
+    socket.on('me', (id) => setMe(id))
 
-        socket.on('me', (id) => setMe(id))
-                
-        socket.on('callUser', ({ from, callerName, signal }) => {
-            setCall({ isRecieveCall: true, from, callerName, signal })
-        });
+    socket.on('callUser', ({ from, name: callerName, signal }) => {
+      setCall({ isReceivingCall: true, from, name: callerName, signal });
+    });
 
-    }, [])
-    
+   
 
-
-    const callAnswer = () => {
-        setCallaccpted(true)
-        const peer = new Peer({ initiator: false, trickle: false, stream })
-        peer.on('signal ', (data) => {
-            socket.emit('answerCall', { signal: data, to: call.from })
-        })
-
-        peer.on('stream', (currentStream) => {
-            userVideo.current.srcObject = currentStream
-        })
-
-        currentRef.current = peer;
-    }
+  }, [])
 
 
-    const callUser = (id) => {
-        const peer = new Peer({ initiator: true, trickle: false, stream })
-        peer.on('signal ', (data) => {
-            console.log('data' , data )
-            socket.emit('callUser', { userToCall: id, signalData: data, from: me, name })
-        })
 
-        peer.on('stream', (currentStream) => {
-            userVideo.current.srcObject = currentStream
-        })
+  const callAnswer = () => {
+    setCallaccpted(true)
+    const peer = new Peer({ initiator: false, trickle: false, stream })
+    peer.on('signal', (data) => {
+      socket.emit('answerCall', { signal: data, to: call.from })
+    })
 
-        socket.on('callacepted', (signal) => {
-            setCallaccpted(true)
-            peer.signal(signal)
-        // })
-        const peer = new Peer({ initiator: true, trickle: false, stream });
-
-        peer.on('signal', (data) => {
-            console.log("daya" , data )
-          socket.emit('callUser', { userToCall: id, signalData: data, from: me, name });
-        });
-    
-        peer.on('stream', (currentStream) => {
-          userVideo.current.srcObject = currentStream;
-        });
-    
-        socket.on('callaccepted', (signal) => {
-            setCallaccpted(true);
-    
-          peer.signal(signal);
-        });
-    
-        currentRef.current = peer;
+    peer.on('stream', (currentStream) => {
+      userVideo.current.srcObject = currentStream
+    })
+    peer.signal(call.signal)
+    currentRef.current = peer;
+  }
 
 
-    }
+  const callUser = (id) => {
+    const peers = new Peer({ initiator: true, trickle: false, stream })
+    peers.on('signal', (data) => {
+      socket.emit('callUser', { userToCall: id, signalData: data, from: me, name })
+    })
 
-    const leaveCall = () => {
-        setCallEnd(true)
-        currentRef.current.distroy()
+    peers.on('stream', (currentStream) => {
+      userVideo.current.srcObject = currentStream
+    })
 
-        window.location.reload()
+    socket.on('callacepted', (signal) => {
+      setCallaccpted(true)
+      peers.signal(signal)
+    })
 
-    }
+    currentRef.current = peers;
 
-    return (
-        <SocketContext.Provider value={{
-            stream,
-            me,
-            call,
-            callaccpted,
-            callEnd,
-            name,
-            setName,
-            myVideo,
-            userVideo,
-            callAnswer,
-            callUser,
-            leaveCall,
-        }}>
-            {children}
-        </SocketContext.Provider>
-    )
+
+  }
+
+  const leaveCall = () => {
+    setCallEnd(true)
+    currentRef.current.destroy()
+
+    window.location.reload()
+
+  }
+
+  return (
+    <SocketContext.Provider value={{
+      stream,
+      me,
+      call,
+      callaccpted,
+      callEnd,
+      name,
+      setName,
+      myVideo,
+      userVideo,
+      callAnswer,
+      callUser,
+      leaveCall,
+    }}>
+      {children}
+    </SocketContext.Provider>
+  )
 
 
 }

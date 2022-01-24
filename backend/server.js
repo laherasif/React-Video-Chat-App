@@ -27,14 +27,13 @@ const io = new Server(expressServer, {
 io.on('connection', (socket) => {
 
     socket.emit('me', socket.id)
-    console.log("user are connected")
 
     socket.on('disconnect', () => {
         socket.broadcast.emit("callend")
-    })
-
+	})
+	
     socket.on('callUser', ({ signalData, name, userToCall, from }) => {
-        io.to(userToCall).emit({ signal: signalData, from, name })
+        io.to(userToCall).emit("callUser",{ signal: signalData, from, name })
     })
 
     socket.on('answerCall', (data) => {
