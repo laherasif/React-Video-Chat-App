@@ -11,6 +11,21 @@ const { Server } = require("socket.io");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors())
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static("client/build"));
+  
+
+  app.get("*", (req, res) => {
+    res.sendFile(__dirname, "client/build/index.html");
+  })
+  
+  
+  }
+
+app.get('/', (req, res) => {
+	res.send('Running');
+});
+  
 
 const PORT = process.env.PORT || 5000;
 let expressServer = app.listen(PORT, () => {

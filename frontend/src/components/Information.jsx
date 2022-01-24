@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { SocketContext } from '../socket'
 let useStyle = makeStyles((theme) => ({
     container: {
-        marginTop: '20px'
+        marginTop: '50px'
     },
     paper: {
         display: 'flex',
@@ -53,7 +53,7 @@ function Information() {
     const [callToUser, setCallToUser] = useState('')
     return (
 
-        <Container>
+        <Container >
             <Grid container className={classes.container} spacing={3}>
                 <Grid item xs={12} md={6} >
                     <Paper className={classes.paper}>

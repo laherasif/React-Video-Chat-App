@@ -7,7 +7,13 @@ const useStyle = makeStyles((theme) => ({
         marginTop: '20px'
     },
     padding: {
-        padding: '20px'
+        padding: '20px',
+        height:'100%',
+    },
+    name:{
+        fontsize:'20px',
+        fontWeight: 'bold',
+        marginBottom:'10px'
     },
     video: {
         width: '500px',
@@ -29,7 +35,7 @@ function Videoplayer() {
                 <Grid item xs={12} md={6} >
                     {stream && (
                         <Paper className={classes.padding}>
-                            <Typography varient="h4" >{name || "Name"}</Typography>
+                            <Typography varient="h4" className={classes.name} >{name || "UserName"}</Typography>
                             <video playsInline muted ref={myVideo} autoPlay className={classes.video} />
                         </Paper>
                     )
@@ -38,7 +44,7 @@ function Videoplayer() {
                 <Grid item xs={12} md={6}>
                     {callaccpted && !callEnd && (
                         <Paper className={classes.padding}>
-                            <Typography varient="h4">{call.name}</Typography>
+                            <Typography varient="h4" className={classes.name}>{call.name || "UserName"}</Typography>
                             <video playsInline ref={userVideo} autoPlay className={classes.video} />
                         </Paper>
                     )
