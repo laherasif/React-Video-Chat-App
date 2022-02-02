@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import Peer from 'simple-peer'
-
+// live server path 
 const socket = io('https://video-chats-app.herokuapp.com/')
 
 const SocketContext = createContext()
